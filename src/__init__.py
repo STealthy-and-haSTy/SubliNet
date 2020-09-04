@@ -14,11 +14,23 @@ __all__ = [
     "core",
 
     # utilities
-    "utils",
+    "log",
+
+    # handler
+    "NetworkEventHandler",
 
     # network
     "NetworkEvent",
 
-    # handler
-    "handler"
+    "ProtocolMessage",
+    "IntroductionMessage",
+    "AcknowledgeMessage",
+    "MessageMessage",
+    "ErrorMessage",
+    "ClipboardMessage",
+    "FileContentMessage",
+
+    "Connection",
+    "NetworkThread",
+    "ConnectionManager"
 ]
