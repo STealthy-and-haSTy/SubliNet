@@ -9,7 +9,7 @@ import time
 import textwrap
 
 from .messages import ProtocolMessage, IntroductionMessage
-from ..core import log
+from ..utils import log
 
 
 ### ---------------------------------------------------------------------------

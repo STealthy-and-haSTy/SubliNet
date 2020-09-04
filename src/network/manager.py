@@ -1,7 +1,7 @@
 import socket
 from threading import Event, Lock
 
-from ..core import log
+from ..utils import log
 from .connection import Connection
 from .transport import NetworkThread
 
@@ -195,7 +195,7 @@ class ConnectionManager():
         """
         log(f'_handle_event({event}, {connection})')
 
-        handlers = self.handlers.get(event,{})
+        handlers = self.handlers.get(event, {})
         for handler in handlers.values():
             handler(connection, event, extra)
 

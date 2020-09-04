@@ -7,7 +7,7 @@ import socket
 from .messages import ProtocolMessage
 
 from .events import NetworkEvent
-from ..core import log
+from ..utils import log
 
 
 ### ---------------------------------------------------------------------------
