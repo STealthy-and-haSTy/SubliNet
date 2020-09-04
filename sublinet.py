@@ -27,6 +27,7 @@ from .src import *
 
 def plugin_loaded():
     core.loaded()
+    # core.log('Hi', panel=True)
 
 
 def plugin_unloaded():
