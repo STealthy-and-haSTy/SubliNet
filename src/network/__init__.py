@@ -1,9 +1,10 @@
 from ...sublinet import reload
 
-reload("src.network", ["events", "messages"])
+reload("src.network", ["events", "messages", "connection"])
 
 from .events import NetworkEvent
 from .messages import *
+from .connection import Connection
 
 __all__ = [
     "NetworkEvent",
@@ -14,5 +15,7 @@ __all__ = [
     "MessageMessage",
     "ErrorMessage",
     "ClipboardMessage",
-    "FileContentMessage"
+    "FileContentMessage",
+
+    "Connection"
 ]
