@@ -3,6 +3,7 @@ import sublime_plugin
 
 from .network import ConnectionManager
 from .handler import NetworkEventHandler
+from .utils import setup_log_panel
 
 
 ###----------------------------------------------------------------------------
@@ -22,10 +23,14 @@ def loaded():
     """
     global _manager, _handler
 
+    for window in sublime.windows():
+        setup_log_panel(window)
+
     _manager = ConnectionManager()
     _handler = NetworkEventHandler(_manager)
 
     _manager.startup()
+
 
 def unloaded():
     """

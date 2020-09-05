@@ -1,6 +1,6 @@
 from ..sublinet import reload
 
-reload("src", ["core", "utils", "handler"])
+reload("src", ["core", "utils", "handler", "eventhandler"])
 reload("src.network")
 
 from . import core
@@ -9,12 +9,16 @@ from .utils import *
 from .handler import *
 from .network import *
 
+from .eventhandler import *
+
+
 __all__ = [
     # core
     "core",
 
     # utilities
     "log",
+    "setup_log_panel",
 
     # handler
     "NetworkEventHandler",
@@ -32,5 +36,8 @@ __all__ = [
 
     "Connection",
     "NetworkThread",
-    "ConnectionManager"
+    "ConnectionManager",
+
+    # eventhandler
+    "SubliNetEventListener"
 ]
