@@ -193,7 +193,7 @@ class ConnectionManager():
         All events raised by connections go through here, although only those
         that have been registered will do anything.
         """
-        log(f'_handle_event({event}, {connection})')
+        # log(f'_handle_event({event}, {connection})')
 
         handlers = self.handlers.get(event, {})
         for handler in handlers.values():

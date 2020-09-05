@@ -6,6 +6,10 @@ import textwrap
 ###----------------------------------------------------------------------------
 
 
+# TODO: For logs where panel is True, this should only automatically open the
+#       panel if a configuation item says so. There should be an additional
+#       config item that indicates if the panel should auto-close or not. See
+#       the SFTP package, which does the same thing.
 def log(msg, *args, dialog=False, error=False, panel=False, **kwargs):
     """
     Generate a message to the console and optionally as either a message or
@@ -33,7 +37,47 @@ def log(msg, *args, dialog=False, error=False, panel=False, **kwargs):
                 "scroll_to_end": True
             })
 
-        sublime.active_window().run_command("show_panel", {"panel": "output.sublinet"})
+        window = sublime.active_window()
+        window.run_command("show_panel", {"panel": "output.sublinet"})
+        close_panel_after_delay(window, 5000)
+
+
+###----------------------------------------------------------------------------
+
+
+def close_panel_after_delay(window, delay):
+    """
+    After the provided delay, close the SubliNet panel in the window provided.
+
+    This call debounces other calls for the same window within the given delay
+    to ensure that if more logs appear, the panel will remain open long enough
+    to see them.
+    """
+    w_id = window.id()
+
+    # If this is the first call for this window, add a new entry to the tracking
+    # map; otherwise increment the existing value.
+    if w_id not in close_panel_after_delay.map:
+        close_panel_after_delay.map[w_id] = 1
+    else:
+        close_panel_after_delay.map[w_id] += 1
+
+    def close_panel(window):
+        # Decrement the call count for this window; if this is not the last
+        # call, then we can leave.
+        close_panel_after_delay.map[w_id] -= 1
+        if close_panel_after_delay.map[w_id] != 0:
+            return
+
+        # Stop tracking this window now, and perform the close in it
+        del close_panel_after_delay.map[w_id]
+
+        if window.active_panel() == 'output.sublinet':
+            window.run_command('hide_panel')
+
+    sublime.set_timeout(lambda: close_panel(window), delay)
+
+close_panel_after_delay.map = {}
 
 
 ###----------------------------------------------------------------------------
