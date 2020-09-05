@@ -22,8 +22,12 @@ def log(msg, *args, dialog=False, error=False, panel=False, **kwargs):
         print("SubliNet:")
         return sublime.error_message(msg)
 
-    for line in msg.splitlines():
-        print("SubliNet: {msg}".format(msg=line))
+    # Output to the console if this is a regular log or a message dialog; if
+    # we're going to log to the panel, then we don't need to reundantly log to
+    # the console as well.
+    if not panel:
+        for line in msg.splitlines():
+            print("SubliNet: {msg}".format(msg=line))
 
     if dialog:
         sublime.message_dialog(msg)
