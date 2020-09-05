@@ -44,4 +44,12 @@ def unloaded():
         _handler = None
 
 
+def broadcast_message(msg):
+    """
+    Transmit the message to all of the connections currently established with
+    our network manager.
+    """
+    _manager.broadcast(msg)
+
+
 ###----------------------------------------------------------------------------

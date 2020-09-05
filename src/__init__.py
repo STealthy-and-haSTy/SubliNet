@@ -15,6 +15,7 @@ from .eventhandler import *
 __all__ = [
     # core
     "core",
+    "broadcast_message",
 
     # utilities
     "log",
