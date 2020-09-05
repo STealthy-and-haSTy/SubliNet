@@ -28,7 +28,7 @@ class SubliNetEventListener(sublime_plugin.EventListener):
         if name == 'copy' or name == 'cut':
             text = sublime.get_clipboard()
             broadcast_message(ClipboardMessage(text))
-            log(f'Transmitting {text.len()} clipboard characters')
+            log(f'Transmitting {len(text)} clipboard characters')
 
 
 ###----------------------------------------------------------------------------
