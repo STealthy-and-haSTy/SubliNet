@@ -1,12 +1,12 @@
 from ..sublinet import reload
 
-reload("src", ["core", "utils", "handler", "eventhandler"])
+reload("src", ["core", "utils", "nethandler", "eventhandler"])
 reload("src.network")
 
 from . import core
 from .core import *
 from .utils import *
-from .handler import *
+from .nethandler import *
 from .network import *
 
 from .eventhandler import *
@@ -21,7 +21,7 @@ __all__ = [
     "log",
     "setup_log_panel",
 
-    # handler
+    # nethandler
     "NetworkEventHandler",
 
     # network

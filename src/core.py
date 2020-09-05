@@ -2,7 +2,7 @@ import sublime
 import sublime_plugin
 
 from .network import ConnectionManager
-from .handler import NetworkEventHandler
+from .nethandler import NetworkEventHandler
 from .utils import setup_log_panel
 
 
