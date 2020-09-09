@@ -6,6 +6,31 @@ import textwrap
 ###----------------------------------------------------------------------------
 
 
+def loaded():
+    """
+    Initialize package state
+    """
+    sn_setting.obj = sublime.load_settings("SubliNet.sublime-settings")
+    sn_setting.default = {
+        'broadcast_time': 30,
+        'discovery_group': '224.1.1.1',
+        'discovery_port': 4377,
+        'discovery_ttl': 1,
+        'stream_ip': '',
+        'stream_port': 4377,
+    }
+
+
+def unloaded():
+    """
+    Clean up package state before unloading
+    """
+    pass
+
+
+###----------------------------------------------------------------------------
+
+
 # TODO: For logs where panel is True, this should only automatically open the
 #       panel if a configuation item says so. There should be an additional
 #       config item that indicates if the panel should auto-close or not. See
@@ -44,6 +69,17 @@ def log(msg, *args, dialog=False, error=False, panel=False, **kwargs):
         window = sublime.active_window()
         window.run_command("show_panel", {"panel": "output.sublinet"})
         close_panel_after_delay(window, 5000)
+
+
+###----------------------------------------------------------------------------
+
+
+def sn_setting(key):
+    """
+    Get a SubliNet setting from a cached settings object.
+    """
+    default = sn_setting.default.get(key, None)
+    return sn_setting.obj.get(key, default)
 
 
 ###----------------------------------------------------------------------------

@@ -1,0 +1,50 @@
+{
+    // NOTE: All settings related to network communications require you to quit
+    //       and restart Sublime for the change to take effect.
+
+    // How frequently (in seconds) we send out a discovery messages to let other
+    // instances know that we're running.
+    //
+    // Other hosts will connect to us when they receive our discovery broadcast
+    // and they're not already connected, so this also controls how long a
+    // reconnect might take if a connection gets broken.
+    "broadcast_time": 30,
+
+    // The Multicast IP group to broadcast discovery messages on. This needs to
+    // be a Class D address (224.0.0.0 through 239.255.255.255).
+    //
+    // On some OS's (notably MacOS), you may need to adjust the network routes
+    // in order to enable multicast IP traffic if there's not already a route
+    // in place.
+    //
+    // NOTE: Currently, multicast messages go out over all interfaces on a
+    // multihome machine.
+    "discovery_group": "224.1.1.1",
+
+    // The port to broadcast disvovery messages on. Discovery messages are
+    // broadcast via Multicast UDP, so this port can be shared with the
+    // stream_port setting without issues.
+    "discovery_port": 4377,
+
+    // The multicast discovery TTL, which is the maximum number of hops a
+    // multicast packet can take before routers stop passing them on. Generally
+    // speaking, on a LAN the value of 1 here is sufficient.
+    "discovery_ttl": 1,
+
+    // The IP address to listen for incoming requests on. The default value
+    // tries to autodetect the IP address to use by choosing the one associated
+    // with  the interface that has the default route.
+    //
+    // On a multihomed machine it may be desirable to set up listening on a
+    // specific interface by selecting the appropriate IP here instead.
+    //
+    // Currently listening is restricted to a single IP, though this may change
+    // in the future.
+    "stream_ip": "",
+
+    // The port to listen for incoming connections on, in combination with
+    // stream_ip. Incoming connections use TCP while discovery broadcasts use
+    // Multicast UDP, so this port can be the same as discovery_port without
+    // issues.
+    "stream_port": 4377
+}

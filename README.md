@@ -53,13 +53,8 @@ technically minded, they can be modified in `transport.py`):
 In no particular order and as a non-exhaustive list, things that are planned or
 should be done include:
 
- * Allow for configuration of what network interface to use on multihome
-   machines
- * Include configuration for what multicast group and port to broadcast the
-   discovery messages on
- * Allow for return connections to happen on a separately configured port from
-   the discovery broadcast if desired. This should be technically possible now
-   but it requires the `Introduction` message to include a different port.
+ * Detect changes in configuration and signal the network thread so that it can
+   potentially update its network configuration on the fly.
  * Logging to the output panel should be less spoopy (syntax highlighting too?)
  * Use proper host names (as garnered from `Introduction` messages) in the
    output panel instead of IP addresses

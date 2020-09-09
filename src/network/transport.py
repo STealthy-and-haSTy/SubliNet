@@ -9,33 +9,8 @@ import time
 import textwrap
 
 from .messages import ProtocolMessage, IntroductionMessage
+from ..utils import sn_setting
 from ..utils import log
-
-
-### ---------------------------------------------------------------------------
-
-
-# How frequently (in seconds) to make a broadcast
-BROADCAST_TIME = 30
-
-# The multicast group and port that we use to broadcast that we exist.
-MULTICAST_GROUP = '224.1.1.1'
-MULTICAST_PORT  = 4377
-
-# How many hops our broadcasts can take before they get squashed. A value of 1
-# keeps things on the same subnet. You may encounter issues with some network
-# hardware trying hard to squash multicast traffic regardless of what this is
-# set to.
-MULTICAST_TTL = 1
-
-
-### ---------------------------------------------------------------------------
-
-
-# The address that we're going to broadcast ourselves to and the one that we're
-# going to listen to incoming connections on.
-_broadcast_addr = (MULTICAST_GROUP, MULTICAST_PORT)
-_server_addr = ('', MULTICAST_PORT)
 
 
 ### ---------------------------------------------------------------------------
@@ -66,7 +41,7 @@ class NetworkThread(Thread):
         #       we need either a way to signal the thread to change what it is
         #       broadcasting, or we need to quit and restart Sublime to make
         #       such a change take effect.
-        self.broadcast_msg = IntroductionMessage('tmartin', 'password')
+        self.broadcast_msg = IntroductionMessage('tmartin', 'password', sn_setting('stream_ip'), sn_setting('stream_port'))
 
     def __del__(self):
         log("== Destroying network thread")
@@ -87,7 +62,7 @@ class NetworkThread(Thread):
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
 
         # Set the time to live for broadcasts.
-        sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, MULTICAST_TTL)
+        sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, sn_setting('discovery_ttl'))
 
         # Bind the socket now; this is required for us to get any data on this
         # port. We're binding to any IP available on this machine; on Linux we
@@ -95,12 +70,14 @@ class NetworkThread(Thread):
         # from, but Windows doesn't allow that.
         #
         # TODO: Make this a configuration item for people that want to control
-        # what interface to use for discovery, in case they have a multihomed
-        # machine.
-        sock.bind(('' , MULTICAST_PORT))
+        #       what interface to use for discovery, in case they have a
+        #       multihomed machine. This requires that the Introduction message
+        #       be modified to include possibly many IP address and port
+        #       combinations.
+        sock.bind(('' , sn_setting('discovery_port')))
 
         # Join the multicast group.
-        request = struct.pack("4sl", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY)
+        request = struct.pack("4sl", socket.inet_aton(sn_setting('discovery_group')), socket.INADDR_ANY)
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, request)
 
         return sock
@@ -120,7 +97,7 @@ class NetworkThread(Thread):
         if hasattr(socket, 'SO_REUSEPORT'):
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
 
-        sock.bind(_server_addr)
+        sock.bind((sn_setting('stream_ip'), sn_setting('stream_port')))
         sock.listen(5)
 
         return sock
@@ -163,7 +140,7 @@ class NetworkThread(Thread):
         # We should try to connect to this host; once we do, send an
         # introduction message to the other side so they know who we are.
         conn = self.manager.connect(msg.ip, msg.port)
-        conn.send(IntroductionMessage('tmartin', 'password'))
+        conn.send(self.broadcast_msg)
 
     def handle_incoming_peer(self, conn):
         """
@@ -188,6 +165,8 @@ class NetworkThread(Thread):
         last_broadcast = None
 
         discovery = self.broadcast_msg.encode()
+        broadcast_addr = (sn_setting('discovery_group'), sn_setting('discovery_port'))
+        broadcast_delay = sn_setting('broadcast_time')
 
         while not self.event.is_set():
             tick = timer()
@@ -226,8 +205,8 @@ class NetworkThread(Thread):
             for conn in wset:
                 conn._send()
 
-            if last_broadcast is None or tick - last_broadcast > BROADCAST_TIME:
-                self.discovery_socket.sendto(discovery, _broadcast_addr)
+            if last_broadcast is None or tick - last_broadcast > broadcast_delay:
+                self.discovery_socket.sendto(discovery, broadcast_addr)
                 last_broadcast = tick
 
         log("== Network thread is gracefully ending")

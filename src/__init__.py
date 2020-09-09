@@ -18,7 +18,9 @@ __all__ = [
     "broadcast_message",
 
     # utilities
+    "utils",
     "log",
+    "sn_setting",
     "setup_log_panel",
 
     # nethandler

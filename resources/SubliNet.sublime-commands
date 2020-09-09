@@ -1,0 +1,22 @@
+[
+  { "caption": "Preferences: SubliNet",
+    "command": "edit_settings",
+    "args": {
+      "base_file": "${packages}/SubliNet/resources/SubliNet.sublime-settings",
+      "default": "{\n\t$0\n}\n"
+    }
+  },
+  // { "caption": "Preferences: SubliNet Key Bindings",
+  //   "command": "edit_settings",
+  //   "args": {
+  //     "base_file": "${packages}/SubliNet/Default (${platform}).sublime-keymap",
+  //     "default": "[\n\t$0\n]\n"
+  //   }
+  // },
+  { "caption": "SubliNet: Open Readme",
+    "command": "open_file",
+    "args": {
+      "file": "${packages}/SubliNet/README.md"
+    }
+  },
+]
