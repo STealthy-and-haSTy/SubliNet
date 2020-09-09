@@ -26,9 +26,9 @@ class Connection():
     asked to send or that it has received, which it will handle automatically
     based on being called by the underlying network code.
     """
-    def __init__(self, mgr, socket, host, port, callback, accepted=False):
+    def __init__(self, mgr, socket, ip, port, callback, accepted=False):
         """
-        Create a new connection to the provided host and port combination.
+        Create a new connection to the provided ip and port combination.
         This should only be called by the connection manager, which will hold
         onto the connection.
         """
@@ -44,7 +44,8 @@ class Connection():
         #       single handler.
         self.recv_queue = queue.Queue()
 
-        self.host = host;
+        self.ip = ip;
+        self.hostname = ip
         self.port = port
 
         self.socket = socket
@@ -71,11 +72,12 @@ class Connection():
         pass
 
     def __str__(self):
-        return "<Connection host='{0}:{1}' socket={2} out={3} in={4}{5}>".format(
-            self.host, self.port, self.socket.fileno() if self.socket else None,
+        return "<Connection ip='{0}:{1} ({6})' socket={2} out={3} in={4}{5}>".format(
+            self.ip, self.port, self.socket.fileno() if self.socket else None,
             self.send_queue.qsize(),
             self.recv_queue.qsize(),
-            " CONNECTED" if self.connected else "")
+            " CONNECTED" if self.connected else "",
+            self.hostname)
 
     def __repr__(self):
         return str(self)
@@ -209,7 +211,7 @@ class Connection():
         except Exception as e:
             self._raise(NetworkEvent.SEND_ERROR, str(e))
             log("Send Error: {}:{}: {}",
-                self.host, self.port, e)
+                self.ip, self.port, e)
             self.close()
 
     # TODO: This is currently triggering notifications for each incoming
@@ -264,7 +266,7 @@ class Connection():
         except Exception as e:
             self._raise(NetworkEvent.RECV_ERROR, str(e))
             log("Recv Error: {}:{}: {}",
-                self.host, self.port, e)
+                self.ip, self.port, e)
             self.close()
 
 

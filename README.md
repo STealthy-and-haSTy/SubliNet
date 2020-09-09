@@ -56,8 +56,6 @@ should be done include:
  * Detect changes in configuration and signal the network thread so that it can
    potentially update its network configuration on the fly.
  * Logging to the output panel should be less spoopy (syntax highlighting too?)
- * Use proper host names (as garnered from `Introduction` messages) in the
-   output panel instead of IP addresses
  * Configure whether the output panel opens automatically or not when output is
    logged to it (currently it always opens)
  * Configure a time limit to automatically close the output panel if it opens

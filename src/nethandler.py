@@ -2,7 +2,8 @@ import sublime
 
 from Default.paste_from_history import g_clipboard_history
 
-from .network import NetworkEvent, ConnectionManager, ClipboardMessage
+from .network import NetworkEvent, ConnectionManager
+from .network import IntroductionMessage, ClipboardMessage
 
 from .utils import log
 
@@ -26,17 +27,22 @@ class NetworkEventHandler():
         manager.add_handler('core', NetworkEvent.MESSAGE, self.message)
 
     def connectionState(self, connection, event, extra):
-        log(f'{event.name.title()}: {connection.host}:{connection.port}', panel=True)
+        log(f'{event.name.title()}: {connection.hostname}:{connection.port}', panel=True)
 
     def message(self, connection, event, msg):
         if msg.msg_id() == ClipboardMessage.msg_id():
             return self.clipboard_message(connection, msg.text)
+        elif msg.msg_id() == IntroductionMessage.msg_id():
+            return self.introduction_message(connection, msg)
 
     def clipboard_message(self, connection, text):
-        log(f'{connection.host}:{connection.port} updated the clipboard ({len(text)} characters)', panel=True)
+        log(f'{connection.hostname} updated the clipboard ({len(text)} characters)', panel=True)
 
         sublime.set_clipboard(text)
         g_clipboard_history.push_text(text)
+
+    def introduction_message(self, connection, msg):
+        connection.hostname = msg.hostname
 
 
 ###----------------------------------------------------------------------------

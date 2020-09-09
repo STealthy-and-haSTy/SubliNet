@@ -82,10 +82,10 @@ class ConnectionManager():
             if key in notify_list:
                 del notify_list[key]
 
-    def find_connection(self, host=None, port=None):
+    def find_connection(self, ip=None, port=None):
         """
         Find and return all connections matching the provided criteria; can
-        find all connections to a host, all connections to a port, or just all
+        find all connections to a ip, all connections to a port, or just all
         connections period.
 
         The returned list may be empty.
@@ -93,7 +93,7 @@ class ConnectionManager():
         retcons = list()
         with self.conn_lock:
             for connection in self.connections:
-                if host is not None and host != connection.host:
+                if ip is not None and ip != connection.ip:
                     continue
 
                 if port is not None and port != connection.port:
@@ -103,16 +103,16 @@ class ConnectionManager():
 
         return retcons
 
-    def connect(self, host, port):
+    def connect(self, ip, port):
         """
-        Start an outgoing connection to the provided host and port.
+        Start an outgoing connection to the provided ip and port.
 
         The new connection object will be returned, but it will not yet be
         connected. An event will be raised when the connection attempt finishes
         (regardless of whether it succeeded or not).
         """
         with self.conn_lock:
-            connection = self._open_connection(host, port)
+            connection = self._open_connection(ip, port)
             self.connections.append(connection)
 
         return connection
@@ -130,31 +130,31 @@ class ConnectionManager():
             for connection in self.connections:
                 connection.send(protocolMsgInstance)
 
-    def _add_connection(self, sock, host, port):
+    def _add_connection(self, sock, ip, port):
         """
         Add a new connection directly from a socket, once a connection is
         actually made. This is called by the network thread to add in the
         new connection after it accepts a connection successfully.
         """
         with self.conn_lock:
-            connection = Connection(self, sock, host, port, self._handle_event, accepted=True)
+            connection = Connection(self, sock, ip, port, self._handle_event, accepted=True)
             self.connections.append(connection)
 
         return connection
 
-    def _open_connection(self, host, port):
+    def _open_connection(self, ip, port):
         """
         Do the underlying work of actually opening up a brand new connection
-        to the provided host and port.
+        to the provided ip and port.
         """
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.setblocking(False)
-            sock.connect((host, port))
+            sock.connect((ip, port))
         except BlockingIOError:
             pass
 
-        connection = Connection(self, sock, host, port, self._handle_event)
+        connection = Connection(self, sock, ip, port, self._handle_event)
 
         return connection
 

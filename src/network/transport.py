@@ -140,6 +140,7 @@ class NetworkThread(Thread):
         # We should try to connect to this host; once we do, send an
         # introduction message to the other side so they know who we are.
         conn = self.manager.connect(msg.ip, msg.port)
+        conn.hostname = msg.hostname
         conn.send(self.broadcast_msg)
 
     def handle_incoming_peer(self, conn):
@@ -150,6 +151,7 @@ class NetworkThread(Thread):
         """
         client, addr = conn.accept()
         conn = self.manager._add_connection(client, addr[0], addr[1])
+
 
     def run(self):
         """
