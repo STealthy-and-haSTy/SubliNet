@@ -12,7 +12,8 @@ def loaded():
     """
     sn_setting.obj = sublime.load_settings("SubliNet.sublime-settings")
     sn_setting.default = {
-        "auto_show_panel": 2,
+        'auto_show_panel': 2,
+        'sync_paste_history': True,
         'broadcast_time': 30,
         'discovery_group': '224.1.1.1',
         'discovery_port': 4377,

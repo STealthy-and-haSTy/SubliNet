@@ -7,6 +7,17 @@
     // number: always show the panel, but hide it after this many seconds
     "auto_show_panel": 2,
 
+    // Whenever a new connection to a remote peer is established, should the
+    // clipboard paste history be synchronized with that host?
+    //
+    // When this is true, we syncrhonize our clipboard history to remote hosts
+    // on each connection. When false, this is not done.
+    //
+    // If this is set to false while other hosts have it set to true, they will
+    // still transmit their clipboard history, but the local end will reject
+    // the messages.
+    "sync_paste_history": true,
+
     // NOTE: All settings related to network communications require you to quit
     //       and restart Sublime for the change to take effect.
 

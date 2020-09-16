@@ -8,9 +8,11 @@ import time
 
 import textwrap
 
-from .messages import ProtocolMessage, IntroductionMessage
+from .messages import ProtocolMessage, IntroductionMessage, ClipboardHistoryMessage
 from ..utils import sn_setting
-from ..utils import log
+from ..utils import log, display_output_panel
+
+from Default.paste_from_history import g_clipboard_history
 
 
 ### ---------------------------------------------------------------------------
@@ -143,6 +145,9 @@ class NetworkThread(Thread):
         conn.hostname = msg.hostname
         conn.send(self.broadcast_msg)
 
+        # Sync our cliboard history to the remote end
+        self.transmit_clipboard_history(conn)
+
     def handle_incoming_peer(self, conn):
         """
         Handle an incoming connection request for a peer. This gets called when
@@ -152,6 +157,24 @@ class NetworkThread(Thread):
         client, addr = conn.accept()
         conn = self.manager._add_connection(client, addr[0], addr[1])
 
+        # Sync our cliboard history to the remote end
+        self.transmit_clipboard_history(conn)
+
+    def transmit_clipboard_history(self, conn):
+        if not sn_setting('sync_paste_history'):
+            return
+
+        history = g_clipboard_history.get()
+        if not history:
+            log('Clipboard history is empty; cannot sync', panel=True)
+        else:
+            for idx, entry in enumerate(history):
+                msg= ClipboardHistoryMessage(idx + 1, len(history), entry[1])
+                conn.send(msg)
+
+            log(f'Transmitted {len(history)} clipboard entries', panel=True)
+
+        display_output_panel(is_error=False)
 
     def run(self):
         """

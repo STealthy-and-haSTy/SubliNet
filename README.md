@@ -26,11 +26,17 @@ messages about not being able to reconnect if a host goes down or is otherwise
 available. Similarly, when new hosts are added, they are seamlessly integrated
 with the existing mesh.
 
-Currently apart from some low level protocol messages, the only messages that
-are transmitted across are messages that transmit the clipboard information to
-all other instances whenever text is copied or pasted. This could be extended
-to other information as well, such as gathering file names, file contents or
-even controlling remote aspects of Sublime.
+Currently, low level protocol messages are exchanged, along with:
+
+- the contents of the clipboard whenever a copy or cut operation happens; on
+  the receiving end, this text is placed on the clipboard and also added to the
+  paste history.
+
+- on connect, the clipboard history is synced to the remote end (if enabled).
+
+This could be extended to other information as well, such as gathering file
+names, file contents or even controlling remote aspects of Sublime.
+
 
 # Networking
 
