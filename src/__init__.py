@@ -20,6 +20,7 @@ __all__ = [
     # utilities
     "utils",
     "log",
+    "display_output_panel",
     "sn_setting",
     "setup_log_panel",
 

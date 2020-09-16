@@ -12,6 +12,7 @@ def loaded():
     """
     sn_setting.obj = sublime.load_settings("SubliNet.sublime-settings")
     sn_setting.default = {
+        "auto_show_panel": 2,
         'broadcast_time': 30,
         'discovery_group': '224.1.1.1',
         'discovery_port': 4377,
@@ -66,9 +67,27 @@ def log(msg, *args, dialog=False, error=False, panel=False, **kwargs):
                 "scroll_to_end": True
             })
 
-        window = sublime.active_window()
-        window.run_command("show_panel", {"panel": "output.sublinet"})
-        close_panel_after_delay(window, 5000)
+
+###----------------------------------------------------------------------------
+
+
+def display_output_panel(is_error=False):
+    """
+    Display the output panel based on the input paramters and the value of the
+    'auto_show_panel' setting.
+    """
+    window = sublime.active_window()
+    if window.active_panel() == 'output.sublinet':
+        return
+
+    # true for always, false for only on error, number for always
+    show_panel = sn_setting('auto_show_panel')
+    if not show_panel and not is_error:
+        return
+
+    window.run_command("show_panel", {"panel": "output.sublinet"})
+    if isinstance(show_panel, bool) == False and isinstance(show_panel, int) and show_panel:
+        close_panel_after_delay(window, show_panel * 1000)
 
 
 ###----------------------------------------------------------------------------

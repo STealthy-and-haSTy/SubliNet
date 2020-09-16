@@ -1,4 +1,12 @@
 {
+    // Should the output panel be automatically displayed? Valid settings for
+    // this are:
+    //
+    //   true: always show the panel on output
+    //  false: only show the panel if an error occurs
+    // number: always show the panel, but hide it after this many seconds
+    "auto_show_panel": 2,
+
     // NOTE: All settings related to network communications require you to quit
     //       and restart Sublime for the change to take effect.
 

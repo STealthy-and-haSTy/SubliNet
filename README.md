@@ -56,10 +56,6 @@ should be done include:
  * Detect changes in configuration and signal the network thread so that it can
    potentially update its network configuration on the fly.
  * Logging to the output panel should be less spoopy (syntax highlighting too?)
- * Configure whether the output panel opens automatically or not when output is
-   logged to it (currently it always opens)
- * Configure a time limit to automatically close the output panel if it opens
-   (currently it always auto-closes after 5 seconds)
  * Implement a proper token ring in the `Introduction` message so that multiple
    users running the package on the same SubNet can control which instances they
    talk to; the `Introduction` message has provisions for this, but they are

@@ -5,7 +5,7 @@ from Default.paste_from_history import g_clipboard_history
 from .network import NetworkEvent, ConnectionManager
 from .network import IntroductionMessage, ClipboardMessage
 
-from .utils import log
+from .utils import log, display_output_panel
 
 
 ###----------------------------------------------------------------------------
@@ -27,7 +27,9 @@ class NetworkEventHandler():
         manager.add_handler('core', NetworkEvent.MESSAGE, self.message)
 
     def connectionState(self, connection, event, extra):
+        is_error = event in [NetworkEvent.CLOSED, NetworkEvent.CONNECTION_FAILED]
         log(f'{event.name.title()}: {connection.hostname}:{connection.port}', panel=True)
+        display_output_panel(is_error)
 
     def message(self, connection, event, msg):
         if msg.msg_id() == ClipboardMessage.msg_id():
@@ -37,6 +39,7 @@ class NetworkEventHandler():
 
     def clipboard_message(self, connection, text):
         log(f'{connection.hostname} updated the clipboard ({len(text)} characters)', panel=True)
+        display_output_panel(is_error=False)
 
         sublime.set_clipboard(text)
         g_clipboard_history.push_text(text)
